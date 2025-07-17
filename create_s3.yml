@@ -1,0 +1,15 @@
+---
+- name: Create S3 bucket using Ansible
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  vars:
+    bucket_name: yaswanth-demo-s3-bucket-{{ 9999 | random }}
+
+  tasks:
+    - name: Create S3 bucket
+      amazon.aws.aws_s3:
+        bucket: "{{ bucket_name }}"
+        mode: create
+        region: us-east-1
