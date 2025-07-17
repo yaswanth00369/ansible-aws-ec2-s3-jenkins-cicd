@@ -5,11 +5,17 @@
   gather_facts: no
 
   vars:
-    bucket_name: yaswanth-demo-s3-bucket-{{ 9999 | random }}
+    bucket_name: yaswanth-demo-s3-bucket-{{ 99999 | random }}
 
   tasks:
     - name: Create S3 bucket
-      amazon.aws.aws_s3:
-        bucket: "{{ bucket_name }}"
-        mode: create
-        region: us-east-1
+      amazon.aws.s3_bucket:
+        name: "{{ bucket_name }}"
+        state: present
+        region: ap-south-1
+      environment:
+        AWS_SHARED_CREDENTIALS_FILE: /home/ec2-user/.aws/credentials
+
+    - name: Show created bucket name
+      debug:
+        msg: "✅ Created bucket name is: {{ bucket_name }}"
