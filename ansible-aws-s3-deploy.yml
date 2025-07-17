@@ -13,8 +13,6 @@
         name: "{{ bucket_name }}"
         state: present
         region: ap-south-1
-      environment:
-        AWS_SHARED_CREDENTIALS_FILE: /home/ec2-user/.aws/credentials
 
     - name: Show created bucket name
       debug:
