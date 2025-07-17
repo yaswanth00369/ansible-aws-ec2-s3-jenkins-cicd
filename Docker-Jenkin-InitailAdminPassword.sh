@@ -34,5 +34,4 @@ PUBLIC_IP=$(curl -s ifconfig.io)
 
 # Print Jenkins access details in green
 echo -e "\e[32mJenkins URL: http://$PUBLIC_IP:8080\e[0m"
-echo -e "\e[32mJenkins User: admin\e[0m"
 echo -e "\e[32mInitial Admin Password: $(sudo docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword)\e[0m"
