@@ -1,0 +1,24 @@
+pipeline {
+    agent { label 'ansible-node' }
+
+    environment {
+        AWS_SHARED_CREDENTIALS_FILE = '/home/ec2-user/.aws/credentials'
+    }
+
+    stages {
+        stage('Clone Repo') {
+            steps {
+                git 'https://github.com/yaswanth00369/ansible-aws-s3-jenkins-cicd.git'
+            }
+        }
+
+        stage('Run Ansible Playbook') {
+            steps {
+                sh '''
+                # ansible-playbook ansible-aws-s3-deploy.yml
+                ansible-playbook ansible-aws-s3-deploy.yml --extra-vars "bucket_name=yaswanth-demo-s3-bucket-${BUILD_NUMBER}"
+                '''
+            }
+        }
+    }
+}
