@@ -16,8 +16,6 @@
   tasks:
     - name: Launch EC2 instance
       amazon.aws.ec2_instance:
-        # state: present  # ensures instance is created
-        state: absent  # ensures instance is removed
         name: "{{ instance_name }}"
         key_name: "{{ key_name }}"
         instance_type: "{{ instance_type }}"
