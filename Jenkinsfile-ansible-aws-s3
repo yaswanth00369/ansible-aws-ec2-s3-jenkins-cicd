@@ -6,11 +6,7 @@ pipeline {
     }
 
     stages {
-        stage('Clone Repo') {
-            steps {
-                git 'https://github.com/yaswanth00369/ansible-aws-s3-jenkins-cicd.git'
-            }
-        }
+
 
         stage('Run Ansible Playbook') {
             steps {
