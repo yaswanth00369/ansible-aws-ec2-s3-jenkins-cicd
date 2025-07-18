@@ -1,0 +1,40 @@
+---
+- name: Launch EC2 instance using Ansible
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  vars:
+    instance_name: yaswanth-demo-instance-{{ 99999 | random }}
+    region: ap-south-1
+    ami_id: ami-0a1235697f4afa8a4            # Amazon Linux 2023 AMI (ap-south-1)
+    instance_type: t2.nano                   # 1vCPU 0.5 GiB Memory
+    key_name: AL2023                         # Replace with your key pair name
+    subnet_id: subnet-0b9b0f798dbe19be2      # Replace with your subnet ID
+    security_group: sg-0703680985f56f283     # Replace with your security group ID
+
+  tasks:
+    - name: Launch EC2 instance
+      amazon.aws.ec2_instance:
+        name: "{{ instance_name }}"
+        key_name: "{{ key_name }}"
+        instance_type: "{{ instance_type }}"
+        image_id: "{{ ami_id }}"
+        wait: yes
+        count: 1
+        region: "{{ region }}"
+        vpc_subnet_id: "{{ subnet_id }}"
+        security_group: "{{ security_group }}"
+        tags:
+          Name: "{{ instance_name }}"
+      register: ec2_result
+      environment:
+        AWS_SHARED_CREDENTIALS_FILE: /home/ec2-user/.aws/credentials
+
+    - name: Show instance details
+      debug:
+        msg:
+          - "✅ EC2 instance launched successfully:"
+          - "  - Instance Name: {{ instance_name }}"
+          - "  - Instance ID: {{ ec2_result.instance_ids[0] }}"
+          - "  - Public IP: {{ ec2_result.instances[0].public_ip_address }}"
