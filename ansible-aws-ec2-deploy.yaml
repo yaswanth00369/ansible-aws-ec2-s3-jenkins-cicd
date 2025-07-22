@@ -15,18 +15,18 @@
 
 
   tasks:
-    - name: 🧮 Generate random suffix
-      ansible.builtin.set_fact:
-        random_suffix: "{{ 10000 | random(start=1000) }}"
+    - name: 🧮 Generate random suffix (only once)
+      set_fact:
+        generated_suffix: "{{ 99999 | random }}"
 
-    - name: 🏷️ Set final instance name (CLI name if provided, else default)
-      ansible.builtin.set_fact:
-        final_instance_name: "{{ instance_name | default(default_instance_prefix ~ '-' ~ random_suffix, true) }}"
+    - name: 🏷️ Set final bucket name (use CLI input if provided)
+      set_fact:
+        instance_name_final: "{{ instance_name | default(default_instance_prefix ~ '-' ~ generated_suffix) }}"
 
 
     - name: Launch EC2 instance
       amazon.aws.ec2_instance:
-        name: "{{ final_instance_name }}"
+        name: "{{ instance_name_final }}"
         key_name: "{{ key_name }}"
         instance_type: "{{ instance_type }}"
         image_id: "{{ ami_id }}"
@@ -36,13 +36,13 @@
         vpc_subnet_id: "{{ subnet_id }}"
         security_group: "{{ security_group }}"
         tags:
-          Name: "{{ instance_name }}"
+          Name: "{{ instance_name_final }}"
       register: ec2_result
 
     - name: Show instance details
       debug:
         msg:
           - "✅ EC2 instance launched successfully:"
-          - "  - Instance Name: {{ final_instance_name }}"
+          - "  - Instance Name: {{ instance_name_final }}"
           - "  - Instance ID: {{ ec2_result.instance_ids[0] }}"
           - "  - Public IP: {{ ec2_result.instances[0].public_ip_address }}"
