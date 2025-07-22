@@ -13,18 +13,19 @@
     subnet_id: subnet-0b9b0f798dbe19be2      # Replace with your subnet ID
     security_group: sg-0703680985f56f283     # Replace with your security group ID
 
-  tasks:
-    - name: 🧮 Generate random suffix (only once)
-      set_fact:
-        generated_suffix: "{{ 99999 | random }}"
 
-    - name: 🏷️ Set final EC2 name (use CLI input if provided)
+  tasks:
+    - name: 🧮 Generate random suffix
       set_fact:
-        instance_name_final: "{{ instance_name | default(default_instance_prefix ~ '-' ~ generated_suffix) }}"
+        suffix: "{{ 99999 | random }}"
+
+    - name: 🏷️ Set final instance name (CLI name if provided, else default)
+      set_fact:
+        final_instance_name: "{{ instance_name | default(default_instance_prefix ~ '-' ~ suffix) }}"
 
     - name: Launch EC2 instance
       amazon.aws.ec2_instance:
-        name: "{{ instance_name_final }}"
+        name: "{{ final_instance_name }}"
         key_name: "{{ key_name }}"
         instance_type: "{{ instance_type }}"
         image_id: "{{ ami_id }}"
@@ -41,6 +42,6 @@
       debug:
         msg:
           - "✅ EC2 instance launched successfully:"
-          - "  - Instance Name: {{ instance_name_final }}"
+          - "  - Instance Name: {{ final_instance_name }}"
           - "  - Instance ID: {{ ec2_result.instance_ids[0] }}"
           - "  - Public IP: {{ ec2_result.instances[0].public_ip_address }}"
