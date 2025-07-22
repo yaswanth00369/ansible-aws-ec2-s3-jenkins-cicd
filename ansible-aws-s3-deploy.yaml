@@ -6,15 +6,15 @@
 
   vars:
     generated_suffix: "{{ 99999 | random }}"
-    bucket_name: "{{ bucket_name | default('yaswanth-demo-s3-bucket-' ~ generated_suffix) }}"
+    final_bucket_name: "{{ bucket_name | default('yaswanth-demo-s3-bucket-' ~ generated_suffix) }}"
 
   tasks:
     - name: 📦 Create S3 bucket
       amazon.aws.s3_bucket:
-        name: "{{ bucket_name }}"
+        name: "{{ final_bucket_name }}"
         state: present
         region: ap-south-1
 
     - name: 🖨️ Show created bucket name
       debug:
-        msg: "✅ Created bucket name is: {{ bucket_name }}"
+        msg: "✅ Created bucket name is: {{ final_bucket_name }}"
