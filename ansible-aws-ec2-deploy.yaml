@@ -16,12 +16,13 @@
 
   tasks:
     - name: 🧮 Generate random suffix
-      set_fact:
-        generated_suffix: "{{ 99999 | random }}"
+      ansible.builtin.set_fact:
+        random_suffix: "{{ 10000 | random(start=1000) }}"
 
     - name: 🏷️ Set final instance name (CLI name if provided, else default)
-      set_fact:
-        final_instance_name: "{{ instance_name | default(default_instance_prefix ~ '-' ~ generated_suffix) }}"
+      ansible.builtin.set_fact:
+        final_instance_name: "{{ instance_name | default(default_instance_prefix ~ '-' ~ random_suffix, true) }}"
+
 
     - name: Launch EC2 instance
       amazon.aws.ec2_instance:
