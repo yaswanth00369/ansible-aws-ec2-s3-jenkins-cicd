@@ -11,7 +11,7 @@ pipeline {
             steps {
                 sh '''
                 ansible-playbook ansible-aws-ec2-deploy.yaml
-                # ansible-playbook ansible-aws-ec2-deploy.yaml --extra-vars "bucket_name=yaswanth-demo-instance-${BUILD_NUMBER}"
+                # ansible-playbook ansible-aws-ec2-deploy.yaml --extra-vars "instance_name=yaswanth-demo-instance-${BUILD_NUMBER}"
                 '''
             }
         }
