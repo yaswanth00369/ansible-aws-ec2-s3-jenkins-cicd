@@ -17,11 +17,11 @@
   tasks:
     - name: 🧮 Generate random suffix
       set_fact:
-        suffix: "{{ 99999 | random }}"
+        generated_suffix: "{{ 99999 | random }}"
 
     - name: 🏷️ Set final instance name (CLI name if provided, else default)
       set_fact:
-        final_instance_name: "{{ instance_name | default(default_instance_prefix ~ '-' ~ suffix) }}"
+        final_instance_name: "{{ instance_name | default(default_instance_prefix ~ '-' ~ generated_suffix) }}"
 
     - name: Launch EC2 instance
       amazon.aws.ec2_instance:
