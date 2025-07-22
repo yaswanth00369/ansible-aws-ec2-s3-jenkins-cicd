@@ -2,19 +2,26 @@
 - name: Create S3 bucket using Ansible
   hosts: localhost
   connection: local
-  gather_facts: no
+  gather_facts: false
 
   vars:
-    generated_suffix: "{{ 99999 | random }}"
-    final_bucket_name: "{{ bucket_name | default('yaswanth-demo-s3-bucket-' ~ generated_suffix) }}"
+    default_bucket_prefix: "yaswanth-demo-s3-bucket"
 
   tasks:
+    - name: 🧮 Generate random suffix (only once)
+      set_fact:
+        generated_suffix: "{{ 99999 | random }}"
+
+    - name: 🏷️ Set final bucket name (use CLI input if provided)
+      set_fact:
+        bucket_name_final: "{{ bucket_name | default(default_bucket_prefix ~ '-' ~ generated_suffix) }}"
+
     - name: 📦 Create S3 bucket
       amazon.aws.s3_bucket:
-        name: "{{ final_bucket_name }}"
+        name: "{{ bucket_name_final }}"
         state: present
         region: ap-south-1
 
     - name: 🖨️ Show created bucket name
       debug:
-        msg: "✅ Created bucket name is: {{ final_bucket_name }}"
+        msg: "✅ Created bucket name is: {{ bucket_name_final }}"
