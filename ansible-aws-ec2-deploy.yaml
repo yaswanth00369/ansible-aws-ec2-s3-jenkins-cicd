@@ -5,7 +5,7 @@
   gather_facts: no
 
   vars:
-    instance_name: yaswanth-demo-instance-{{ 99999 | random }}
+    default_instance_prefix: "yaswanth-demo-instance"
     region: ap-south-1
     ami_id: ami-0a1235697f4afa8a4            # Amazon Linux 2023 AMI (ap-south-1)
     instance_type: t2.nano                   # 1vCPU 0.5 GiB Memory
@@ -14,9 +14,17 @@
     security_group: sg-0703680985f56f283     # Replace with your security group ID
 
   tasks:
+    - name: 🧮 Generate random suffix (only once)
+      set_fact:
+        generated_suffix: "{{ 99999 | random }}"
+
+    - name: 🏷️ Set final EC2 name (use CLI input if provided)
+      set_fact:
+        instance_name_final: "{{ instance_name | default(default_instance_prefix ~ '-' ~ generated_suffix) }}"
+
     - name: Launch EC2 instance
       amazon.aws.ec2_instance:
-        name: "{{ instance_name }}"
+        name: "{{ instance_name_final }}"
         key_name: "{{ key_name }}"
         instance_type: "{{ instance_type }}"
         image_id: "{{ ami_id }}"
@@ -33,6 +41,6 @@
       debug:
         msg:
           - "✅ EC2 instance launched successfully:"
-          - "  - Instance Name: {{ instance_name }}"
+          - "  - Instance Name: {{ instance_name_final }}"
           - "  - Instance ID: {{ ec2_result.instance_ids[0] }}"
           - "  - Public IP: {{ ec2_result.instances[0].public_ip_address }}"
