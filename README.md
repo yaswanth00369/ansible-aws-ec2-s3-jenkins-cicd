@@ -66,7 +66,7 @@ sudo ansible --version
 sudo ansible-galaxy collection install amazon.aws
 sudo ansible-galaxy collection list | grep "amazon.aws"
 sudo yum install python3-pip -y
-sudo pip3 install boto3 botocore -y
+sudo pip3 install boto3 botocore
 ```
 
 **Configure AWS credentials:**
